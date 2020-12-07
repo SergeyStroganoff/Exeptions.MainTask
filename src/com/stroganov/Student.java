@@ -1,5 +1,8 @@
 package com.stroganov;
 
+import com.stroganov.exeptions.ErrorSetGradeException;
+import com.stroganov.exeptions.LackOfSubjectException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +17,11 @@ public class Student {
     private String secondName;
     private Group group;
 
-    public Student(int ID, String surname, String firstName, String secondName, List<AcademicSubject> academicSubjects) {
+    public Student(int ID, String surname, String firstName, String secondName, List<AcademicSubject> academicSubjects) throws LackOfSubjectException {
+
+        if (academicSubjects.isEmpty()) {
+            throw new LackOfSubjectException();
+        }
         this.ID = ID;
         this.surname = surname;
         this.firstName = firstName;
@@ -66,7 +73,10 @@ public class Student {
         return academicSubjects;
     }
 
-    public void setAcademicSubjects(List<AcademicSubject> academicSubjects) {
+    public void setAcademicSubjects(List<AcademicSubject> academicSubjects) throws LackOfSubjectException {
+        if (academicSubjects.isEmpty()) {
+            throw new LackOfSubjectException();
+        }
         this.academicSubjects = academicSubjects;
     }
 
@@ -75,11 +85,11 @@ public class Student {
         return academicSubjectGradeMap;
     }
 
-    public void addAcademicSubjectGradeMap(AcademicSubject subject, Integer grade) {
+    public void addAcademicSubjectGradeMap(AcademicSubject subject, Integer grade) throws ErrorSetGradeException {
 
         if (grade > 0 && grade < 11) {
             academicSubjectGradeMap.put(subject, grade);
-        } else throw new IllegalArgumentException("Неверный аргумент");
+        } else throw new ErrorSetGradeException(subject);
 
     }
 
@@ -126,12 +136,13 @@ public class Student {
         return mediumGrade / numberSubject;
     }
 
-    public int getSubjectGrade(AcademicSubject subject) throws IllegalArgumentException {
+    public int getSubjectGrade(AcademicSubject subject) {
 
         if (academicSubjectGradeMap.get(subject) != null) {
             return academicSubjectGradeMap.get(subject);
         } else {
-            throw new IllegalArgumentException("У студента нет запрашиваемого предмета");
+
+            return 0;
         }
     }
 

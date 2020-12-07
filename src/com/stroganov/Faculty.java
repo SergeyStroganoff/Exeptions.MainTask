@@ -1,5 +1,7 @@
 package com.stroganov;
 
+import com.stroganov.exeptions.LackGroupInFacultyException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +38,11 @@ public class Faculty implements GetMediumGrade {
         return facultyGroups;
     }
 
-    public void setFacultyGroups(List<Group> facultyGroups) {
+    public void setFacultyGroups(List<Group> facultyGroups) throws LackGroupInFacultyException {
+        if (facultyGroups.isEmpty() || facultyGroups == null) {
+
+            throw new LackGroupInFacultyException();
+        }
         this.facultyGroups = facultyGroups;
     }
 
@@ -77,14 +83,14 @@ public class Faculty implements GetMediumGrade {
     @Override
     public int getMediumGrade(AcademicSubject currentSubject) {
         int mediumGrade = 0;
-        int count =0;
+        int count = 0;
         for (Group currentGroup : facultyGroups) {
 
             mediumGrade += currentGroup.getMediumGrade(currentSubject);
-          //  System.out.println(mediumGrade);
+            //  System.out.println(mediumGrade);
             count++;
         }
-        return mediumGrade/count;
+        return mediumGrade / count;
     }
 
 

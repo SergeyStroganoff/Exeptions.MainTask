@@ -1,16 +1,22 @@
 package com.stroganov;
 
+import com.stroganov.exeptions.LackStudentInGroupException;
+
 import java.util.List;
 import java.util.Objects;
 
-public class Group implements GetMediumGrade{
+public class Group implements GetMediumGrade {
 
-    private   int ID;
-    private   String groupName;
-    private List<Student> studentList;
     Faculty faculty;
+    private int ID;
+    private String groupName;
+    private List<Student> studentList;
 
-    public Group(int ID, String groupName, List<Student> studentList) {
+    public Group(int ID, String groupName, List<Student> studentList) throws LackStudentInGroupException {
+
+        if (studentList.isEmpty()) {
+            throw new LackStudentInGroupException();
+        }
         this.ID = ID;
         this.groupName = groupName;
         this.studentList = studentList;
@@ -37,7 +43,11 @@ public class Group implements GetMediumGrade{
         return studentList;
     }
 
-    public void setStudentList(List<Student> studentList) {
+    public void setStudentList(List<Student> studentList) throws LackStudentInGroupException {
+
+        if (studentList.isEmpty()) {
+            throw new LackStudentInGroupException();
+        }
         this.studentList = studentList;
     }
 
@@ -77,16 +87,21 @@ public class Group implements GetMediumGrade{
 
     @Override
     public int getMediumGrade(AcademicSubject currentSubject) {
+        int studentGrade = 0;
         int sumGrade = 0;
-        int count=0;
+        int count = 0;
 
-        for (Student currentStudent:studentList) {
+        for (Student currentStudent : studentList) {
 
-           sumGrade+= currentStudent.getSubjectGrade(currentSubject);
-           // System.out.println(sumGrade);
-            count++;
+            studentGrade = currentStudent.getSubjectGrade(currentSubject);
+            if (studentGrade > 0) {
+                sumGrade += studentGrade;
+                count++;
+            }
         }
+        if (count > 0) {
 
-        return sumGrade/count;
+            return sumGrade / count;
+        } else return -1;
     }
 }

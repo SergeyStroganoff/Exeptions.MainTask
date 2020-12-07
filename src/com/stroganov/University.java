@@ -1,5 +1,7 @@
 package com.stroganov;
 
+import com.stroganov.exeptions.LackFacultyInUniversityException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +11,14 @@ public class University {
     private List<Faculty> facultyList;
 
     public University(String universityName, List<Faculty> facultyList) {
+
+        if (facultyList.isEmpty() || facultyList == null) {
+            try {
+                throw new LackFacultyInUniversityException();
+            } catch (LackFacultyInUniversityException e) {
+                e.printStackTrace();
+            }
+        }
         this.universityName = universityName;
         this.facultyList = facultyList;
     }
